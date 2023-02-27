@@ -28,6 +28,8 @@ def on_ui_settings():
     shared.opts.add_option("use_prompt_parser_when_save_prompt_to_eagle_as_tags", shared.OptionInfo(False, "Use prompt parser when save prompt to eagle as tags", section=("eagle_pnginfo", "Eagle Pnginfo")))
     # txt: Additinal tags
     shared.opts.add_option("additional_tags_to_eagle", shared.OptionInfo("", "Additinal tag pattern", section=("eagle_pnginfo", "Eagle Pnginfo")))
+    # txt: Tags to be added as is
+    shared.opts.add_option("additional_tags_as_is_to_eagle", shared.OptionInfo("", "Tags to be added as is", section=("eagle_pnginfo", "Eagle Pnginfo")))
     # txt: server_url
     shared.opts.add_option("outside_server_url_port", shared.OptionInfo("", "Outside Eagle server connection (url:port)", section=("eagle_pnginfo", "Eagle Pnginfo")))
     # specify Eagle folderID
@@ -67,6 +69,10 @@ def on_image_saved(params:script_callbacks.ImageSaveParams):
             _tags = gen.generate_from_p(shared.opts.additional_tags_to_eagle)
             if _tags and len(_tags) > 0:
                 tags += _tags
+        if shared.opts.additional_tags_as_is_to_eagle != "":
+            if len(shared.opts.additional_tags_as_is_to_eagle) > 0:
+                tags += Parser.prompt_to_tags(shared.opts.additional_tags_as_is_to_eagle)
+
 
         def _get_folderId(folder_name_or_id, allow_create_new_folder, server_url="http://localhost", port=41595):
             _ret = api_util.find_or_create_folder(folder_name_or_id, allow_create_new_folder, server_url, port)
